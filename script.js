@@ -52,8 +52,16 @@ function geocodeAddress() {
 
         if (circle) map.removeLayer(circle);
         circle = L.circle([lat, lon], {
-          color, fillColor: color, fillOpacity: 0.4, radius
-        }).addTo(map);
+  color, fillColor: color, fillOpacity: 0.4, radius
+}).addTo(map);
+
+// Ajouter l'animation à l'élément SVG du cercle
+setTimeout(() => {
+  const circles = document.querySelectorAll('path.leaflet-interactive');
+  if (circles.length > 0) {
+    circles[circles.length - 1].classList.add('animate-circle');
+  }
+}, 50);
       } else {
         alert("Adresse introuvable.");
       }
