@@ -1,6 +1,15 @@
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const addr = params.get("adresse");
+  if (addr) {
+    document.getElementById('address').value = addr;
+    geocodeAddress();
+  }
+};
+
 var map = L.map('map').setView([46.603354, 1.888334], 6);
 
-// Nouveau fond de carte stylé (Carto Light)
+// Carte stylée (Carto)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap & Carto',
   subdomains: 'abcd',
@@ -36,6 +45,20 @@ function geocodeAddress() {
         alert("Adresse introuvable.");
       }
     });
+}
+
+function shareLink() {
+  const address = document.getElementById('address').value;
+  if (!address) {
+    alert("Veuillez d'abord entrer une adresse.");
+    return;
+  }
+  const url = `${window.location.origin}${window.location.pathname}?adresse=${encodeURIComponent(address)}`;
+  const input = document.getElementById('shareLink');
+  input.value = url;
+  input.select();
+  document.execCommand("copy");
+  alert("Lien copié dans le presse-papier !");
 }
 
 // Légende
