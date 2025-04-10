@@ -78,7 +78,6 @@
   <script>
     var map = L.map('map').setView([46.603354, 1.888334], 6); // Vue France
 
-    // Fond de carte
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
@@ -86,7 +85,6 @@
     let marker;
     let circle;
 
-    // Fonction recherche adresse
     function geocodeAddress() {
       const address = document.getElementById('address').value;
 
@@ -136,34 +134,36 @@
         });
     }
 
-    // Légende
+    // Légende des zones
     const legend = L.control({ position: "bottomright" });
     legend.onAdd = function (map) {
       const div = L.DomUtil.create("div", "info legend");
       div.innerHTML += "<h4>Zones de bruit</h4>";
-      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Zone I (très bruyant)<br>';
-      div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> Zone II (modéré)<br>';
-      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Zone III (léger)<br>';
+      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Zone A (fort)<br>';
+      div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> Zone B (modéré)<br>';
+      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Zone C (léger)<br>';
       return div;
     };
     legend.addTo(map);
 
-    // Charger et afficher le fichier GeoJSON
+    // Charger GeoJSON réel
     fetch('zones_bruit.geojson')
       .then(response => response.json())
       .then(data => {
         L.geoJSON(data, {
           style: function(feature) {
-            switch (feature.properties.zone) {
-              case 'Zone I': return { color: 'red', fillOpacity: 0.4 };
-              case 'Zone II': return { color: 'orange', fillOpacity: 0.4 };
-              case 'Zone III': return { color: 'yellow', fillOpacity: 0.4 };
+            switch (feature.properties.ZONE) {
+              case 'A': return { color: 'red', fillOpacity: 0.4 };
+              case 'B': return { color: 'orange', fillOpacity: 0.4 };
+              case 'C': return { color: 'yellow', fillOpacity: 0.4 };
               default: return { color: 'blue', fillOpacity: 0.3 };
             }
           },
           onEachFeature: function(feature, layer) {
-            if (feature.properties && feature.properties.zone) {
-              layer.bindPopup('Zone de bruit : ' + feature.properties.zone);
+            if (feature.properties) {
+              layer.bindPopup(
+                `<strong>${feature.properties.NOM}</strong><br>Zone : ${feature.properties.ZONE}<br><a href="${feature.properties.REF_DOC}" target="_blank">Document PEB</a>`
+              );
             }
           }
         }).addTo(map);
