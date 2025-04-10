@@ -27,48 +27,62 @@ function geocodeAddress() {
       if (data.length > 0) {
         const lat = data[0].lat;
         const lon = data[0].lon;
-        map.setView([lat, lon], 13);
-
-        if (marker) marker.setLatLng([lat, lon]);
-        else marker = L.marker([lat, lon]).addTo(map);
-
-        const level = Math.floor(Math.random() * 5) + 1;
-        let color = "green", radius = 300;
-        switch (level) {
-          case 1: color = "green"; radius = 300; break;
-          case 2: color = "yellow"; radius = 500; break;
-          case 3: color = "orange"; radius = 700; break;
-          case 4: color = "red"; radius = 900; break;
-          case 5: color = "#8B0000"; radius = 1100; break;
-        }
-
-        const estimation = {
-          1: "~48 dB – Zone calme",
-          2: "~52 dB – Bruit faible",
-          3: "~57 dB – Bruit modéré",
-          4: "~62 dB – Bruit élevé",
-          5: "~67 dB – Très bruyant"
-        };
-
-        if (circle) map.removeLayer(circle);
-        circle = L.circle([lat, lon], {
-          color, fillColor: color, fillOpacity: 0.4, radius
-        }).addTo(map)
-          .bindPopup(`<strong>Estimation du bruit :</strong><br>${estimation[level]}`);
-
-        // Animation douce
-        setTimeout(() => {
-          const circles = document.querySelectorAll('path.leaflet-interactive');
-          if (circles.length > 0) {
-            circles[circles.length - 1].classList.add('animate-circle');
-          }
-        }, 50);
+        showBruitEstimation(lat, lon);
       } else {
         alert("Adresse introuvable.");
       }
     });
 }
 
+function showBruitEstimation(lat, lon) {
+  map.setView([lat, lon], 13);
+
+  if (marker) marker.setLatLng([lat, lon]);
+  else marker = L.marker([lat, lon]).addTo(map);
+
+  const level = Math.floor(Math.random() * 5) + 1;
+  let color = "green", radius = 300;
+
+  switch (level) {
+    case 1: color = "green"; radius = 300; break;
+    case 2: color = "yellow"; radius = 500; break;
+    case 3: color = "orange"; radius = 700; break;
+    case 4: color = "red"; radius = 900; break;
+    case 5: color = "#8B0000"; radius = 1100; break;
+  }
+
+  const estimation = {
+    1: "~48 dB – Zone calme",
+    2: "~52 dB – Bruit faible",
+    3: "~57 dB – Bruit modéré",
+    4: "~62 dB – Bruit élevé",
+    5: "~67 dB – Très bruyant"
+  };
+
+  if (circle) map.removeLayer(circle);
+  circle = L.circle([lat, lon], {
+    color, fillColor: color, fillOpacity: 0.4, radius
+  }).addTo(map)
+    .bindPopup(`<strong>Estimation du bruit :</strong><br>${estimation[level]}`)
+    .openPopup();
+
+  // Animation
+  setTimeout(() => {
+    const circles = document.querySelectorAll('path.leaflet-interactive');
+    if (circles.length > 0) {
+      circles[circles.length - 1].classList.add('animate-circle');
+    }
+  }, 50);
+}
+
+// ✅ Clic direct sur la carte
+map.on("click", function (e) {
+  const lat = e.latlng.lat;
+  const lon = e.latlng.lng;
+  showBruitEstimation(lat, lon);
+});
+
+// ✅ Partage du lien
 function shareLink() {
   const address = document.getElementById('address').value;
   if (!address) {
@@ -83,7 +97,7 @@ function shareLink() {
   alert("Lien copié dans le presse-papier !");
 }
 
-// Nouvelle légende 5 niveaux
+// ✅ Légende détaillée
 const legend = L.control({ position: "bottomright" });
 legend.onAdd = function (map) {
   const div = L.DomUtil.create("div", "info legend");
@@ -97,7 +111,7 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
-// Formulaire : envoi + confirmation
+// ✅ Formulaire de contact
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bruitForm");
   const success = document.getElementById("formSuccess");
