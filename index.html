@@ -2,173 +2,27 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mon Village Est-Il Bruyant ?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/747/747376.png" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f8;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #004d99;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-    }
-
-    button {
-      padding: 10px 15px;
-      background-color: #004d99;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #map {
-      margin-top: 30px;
-      height: 400px;
-      width: 100%;
-      border: 2px solid #ccc;
-    }
-
-    .legend {
-      background: white;
-      padding: 10px;
-      font-size: 14px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      line-height: 1.5;
-    }
-  </style>
 </head>
 <body>
   <header>
     <h1>Mon Village Est-Il Bruyant ?</h1>
-    <p>Analysez le bruit des avions au-dessus de chez vous</p>
+    <p>Découvrez si votre commune est exposée au bruit des avions</p>
   </header>
 
   <div class="container">
-    <p>Ce site vous permet d’identifier les zones en France les plus affectées par le bruit des avions en fonction de leur hauteur et du type d’avion.</p>
-
     <label for="address">Entrez votre adresse :</label>
     <input type="text" id="address" placeholder="Ex: 10 rue de Paris, 75000 Paris" />
     <button onclick="geocodeAddress()">Voir les résultats</button>
-
     <div id="map"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    var map = L.map('map').setView([46.603354, 1.888334], 6); // Vue France
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    let marker;
-    let circle;
-
-    function geocodeAddress() {
-      const address = document.getElementById('address').value;
-
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.length > 0) {
-            const lat = data[0].lat;
-            const lon = data[0].lon;
-
-            map.setView([lat, lon], 13);
-
-            if (marker) {
-              marker.setLatLng([lat, lon]);
-            } else {
-              marker = L.marker([lat, lon]).addTo(map);
-            }
-
-            const level = Math.floor(Math.random() * 3) + 1;
-            let color = "green";
-            let radius = 300;
-
-            if (level === 2) {
-              color = "orange";
-              radius = 600;
-            } else if (level === 3) {
-              color = "red";
-              radius = 1000;
-            }
-
-            if (circle) {
-              map.removeLayer(circle);
-            }
-
-            circle = L.circle([lat, lon], {
-              color: color,
-              fillColor: color,
-              fillOpacity: 0.4,
-              radius: radius
-            }).addTo(map);
-          } else {
-            alert("Adresse introuvable.");
-          }
-        })
-        .catch(error => {
-          console.error("Erreur de géocodage :", error);
-        });
-    }
-
-    // Légende des zones
-    const legend = L.control({ position: "bottomright" });
-    legend.onAdd = function (map) {
-      const div = L.DomUtil.create("div", "info legend");
-      div.innerHTML += "<h4>Zones de bruit</h4>";
-      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Zone A (fort)<br>';
-      div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> Zone B (modéré)<br>';
-      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Zone C (léger)<br>';
-      return div;
-    };
-    legend.addTo(map);
-
-    // Charger GeoJSON réel
-   fetch('zones_bruit.geojson')
-      .then(response => response.json())
-      .then(data => {
-        L.geoJSON(data, {
-          style: function(feature) {
-            switch (feature.properties.ZONE) {
-              case 'A': return { color: 'red', fillOpacity: 0.4 };
-              case 'B': return { color: 'orange', fillOpacity: 0.4 };
-              case 'C': return { color: 'yellow', fillOpacity: 0.4 };
-              default: return { color: 'blue', fillOpacity: 0.3 };
-            }
-          },
-          onEachFeature: function(feature, layer) {
-            if (feature.properties) {
-              layer.bindPopup(
-                `<strong>${feature.properties.NOM}</strong><br>Zone : ${feature.properties.ZONE}<br><a href="${feature.properties.REF_DOC}" target="_blank">Document PEB</a>`
-              );
-            }
-          }
-        }).addTo(map);
-      })
-      .catch(err => console.error("Erreur lors du chargement GeoJSON :", err));
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
