@@ -51,3 +51,22 @@ button {
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
   line-height: 1.5;
 }
+form textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+form input[type="email"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
