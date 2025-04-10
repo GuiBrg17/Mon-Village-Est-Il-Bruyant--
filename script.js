@@ -9,7 +9,6 @@ window.onload = () => {
 
 var map = L.map('map').setView([46.603354, 1.888334], 6);
 
-// Carte stylée (Carto)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap & Carto',
   subdomains: 'abcd',
@@ -72,3 +71,28 @@ legend.onAdd = function (map) {
   return div;
 };
 legend.addTo(map);
+
+// Formulaire de contact : confirmation
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("bruitForm");
+  const success = document.getElementById("formSuccess");
+
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          success.style.display = "block";
+          form.reset();
+        } else {
+          alert("Une erreur est survenue. Merci de réessayer.");
+        }
+      });
+    });
+  }
+});
