@@ -89,3 +89,17 @@ textarea, input[type="email"] {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+.leaflet-interactive.animate-circle {
+  animation: zoomInCircle 0.6s ease-out forwards;
+}
+
+@keyframes zoomInCircle {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
