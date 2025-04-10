@@ -75,10 +75,10 @@
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
   <script>
-    var map = L.map('map').setView([46.603354, 1.888334], 6); // France
+    var map = L.map('map').setView([46.603354, 1.888334], 6); // Vue France
 
+    // Fond de carte
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
@@ -86,48 +86,7 @@
     let marker;
     let circle;
 
-    // Légende
-    const legend = L.control({ position: "bottomright" });
-    legend.onAdd = function (map) {
-      const div = L.DomUtil.create("div", "info legend");
-      div.innerHTML += "<h4>Niveau de bruit</h4>";
-      div.innerHTML += '<i style="background: green; width: 12px; height: 12px; display:inline-block;"></i> Calme<br>';
-      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Bruit modéré<br>';
-      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Très bruyant<br>';
-      return div;
-    };
-    legend.addTo(map);
-
-    // Zones prédéfinies avec niveau de bruit
-    const zones = [
-      { lat: 48.8566, lon: 2.3522, level: 3 }, // Paris
-      { lat: 45.75, lon: 4.85, level: 2 },     // Lyon
-      { lat: 43.6, lon: 3.87, level: 1 },       // Montpellier
-      { lat: 50.63, lon: 3.06, level: 2 },      // Lille
-      { lat: 43.2965, lon: 5.3698, level: 3 },  // Marseille
-    ];
-
-    // Afficher cercles au chargement
-    zones.forEach(zone => {
-      let color = "green";
-      let radius = 300;
-
-      if (zone.level === 2) {
-        color = "yellow";
-        radius = 600;
-      } else if (zone.level === 3) {
-        color = "red";
-        radius = 1000;
-      }
-
-      L.circle([zone.lat, zone.lon], {
-        color: color,
-        fillColor: color,
-        fillOpacity: 0.4,
-        radius: radius
-      }).addTo(map);
-    });
-
+    // Fonction recherche adresse
     function geocodeAddress() {
       const address = document.getElementById('address').value;
 
@@ -146,13 +105,12 @@
               marker = L.marker([lat, lon]).addTo(map);
             }
 
-            // Niveau bruit simulé à l'adresse
             const level = Math.floor(Math.random() * 3) + 1;
             let color = "green";
             let radius = 300;
 
             if (level === 2) {
-              color = "yellow";
+              color = "orange";
               radius = 600;
             } else if (level === 3) {
               color = "red";
@@ -177,6 +135,40 @@
           console.error("Erreur de géocodage :", error);
         });
     }
+
+    // Légende
+    const legend = L.control({ position: "bottomright" });
+    legend.onAdd = function (map) {
+      const div = L.DomUtil.create("div", "info legend");
+      div.innerHTML += "<h4>Zones de bruit</h4>";
+      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Zone I (très bruyant)<br>';
+      div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> Zone II (modéré)<br>';
+      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Zone III (léger)<br>';
+      return div;
+    };
+    legend.addTo(map);
+
+    // Charger et afficher le fichier GeoJSON
+    fetch('zones_bruit.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: function(feature) {
+            switch (feature.properties.zone) {
+              case 'Zone I': return { color: 'red', fillOpacity: 0.4 };
+              case 'Zone II': return { color: 'orange', fillOpacity: 0.4 };
+              case 'Zone III': return { color: 'yellow', fillOpacity: 0.4 };
+              default: return { color: 'blue', fillOpacity: 0.3 };
+            }
+          },
+          onEachFeature: function(feature, layer) {
+            if (feature.properties && feature.properties.zone) {
+              layer.bindPopup('Zone de bruit : ' + feature.properties.zone);
+            }
+          }
+        }).addTo(map);
+      })
+      .catch(err => console.error("Erreur lors du chargement GeoJSON :", err));
   </script>
 </body>
 </html>
