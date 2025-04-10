@@ -9,6 +9,7 @@ window.onload = () => {
 
 var map = L.map('map').setView([46.603354, 1.888334], 6);
 
+// Carte fond clair
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap & Carto',
   subdomains: 'abcd',
@@ -32,9 +33,22 @@ function geocodeAddress() {
         if (marker) marker.setLatLng([lat, lon]);
         else marker = L.marker([lat, lon]).addTo(map);
 
-        const level = Math.floor(Math.random() * 3) + 1;
-        let color = level === 3 ? 'red' : level === 2 ? 'orange' : 'green';
-        let radius = level === 3 ? 1000 : level === 2 ? 600 : 300;
+        const level = Math.floor(Math.random() * 5) + 1; // Niveau entre 1 et 5
+        let color = "green";
+        let radius = 300;
+
+        switch (level) {
+          case 1:
+            color = "green"; radius = 300; break;
+          case 2:
+            color = "yellow"; radius = 500; break;
+          case 3:
+            color = "orange"; radius = 700; break;
+          case 4:
+            color = "red"; radius = 900; break;
+          case 5:
+            color = "#8B0000"; radius = 1100; break; // rouge foncé
+        }
 
         if (circle) map.removeLayer(circle);
         circle = L.circle([lat, lon], {
@@ -60,19 +74,21 @@ function shareLink() {
   alert("Lien copié dans le presse-papier !");
 }
 
-// Légende
+// Légende avec 5 niveaux
 const legend = L.control({ position: "bottomright" });
 legend.onAdd = function (map) {
   const div = L.DomUtil.create("div", "info legend");
-  div.innerHTML += "<h4>Zones de bruit</h4>";
-  div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Fort<br>';
-  div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> Modéré<br>';
-  div.innerHTML += '<i style="background: green; width: 12px; height: 12px; display:inline-block;"></i> Léger<br>';
+  div.innerHTML += "<h4>Estimation du bruit (dB)</h4>";
+  div.innerHTML += '<i style="background: #8B0000; width: 12px; height: 12px; display:inline-block;"></i> > 65 dB (très bruyant)<br>';
+  div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> 60–65 dB (élevé)<br>';
+  div.innerHTML += '<i style="background: orange; width: 12px; height: 12px; display:inline-block;"></i> 55–60 dB (modéré)<br>';
+  div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> 50–55 dB (faible)<br>';
+  div.innerHTML += '<i style="background: green; width: 12px; height: 12px; display:inline-block;"></i> < 50 dB (calme)<br>';
   return div;
 };
 legend.addTo(map);
 
-// Formulaire de contact : confirmation
+// Formulaire : confirmation d’envoi
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bruitForm");
   const success = document.getElementById("formSuccess");
