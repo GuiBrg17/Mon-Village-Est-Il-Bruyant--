@@ -56,6 +56,7 @@ function geocodeAddress() {
         }).addTo(map)
           .bindPopup(`<strong>Estimation du bruit :</strong><br>${estimation[level]}`);
 
+        // Animation douce
         setTimeout(() => {
           const circles = document.querySelectorAll('path.leaflet-interactive');
           if (circles.length > 0) {
@@ -82,6 +83,7 @@ function shareLink() {
   alert("Lien copié dans le presse-papier !");
 }
 
+// Nouvelle légende 5 niveaux
 const legend = L.control({ position: "bottomright" });
 legend.onAdd = function (map) {
   const div = L.DomUtil.create("div", "info legend");
@@ -95,6 +97,7 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
+// Formulaire : envoi + confirmation
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bruitForm");
   const success = document.getElementById("formSuccess");
