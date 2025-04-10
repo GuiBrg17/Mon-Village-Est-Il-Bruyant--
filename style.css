@@ -19,12 +19,15 @@ header {
   padding: 20px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+textarea {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 14px;
 }
 
 button {
@@ -35,6 +38,11 @@ button {
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #0052a3;
 }
 
 #map {
@@ -42,6 +50,7 @@ button {
   height: 400px;
   width: 100%;
   border: 2px solid #ccc;
+  border-radius: 4px;
 }
 
 .legend {
@@ -51,25 +60,7 @@ button {
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
   line-height: 1.5;
 }
-form textarea {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-}
 
-form input[type="email"] {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-form button {
-  background-color: #0066cc;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 4px;
-}
 .fade-in {
   opacity: 0;
   transform: translateY(20px);
@@ -83,12 +74,6 @@ form button {
   }
 }
 
-textarea, input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
 .leaflet-interactive.animate-circle {
   animation: zoomInCircle 0.6s ease-out forwards;
 }
