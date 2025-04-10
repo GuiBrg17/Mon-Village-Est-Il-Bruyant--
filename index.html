@@ -147,7 +147,7 @@
     legend.addTo(map);
 
     // Charger GeoJSON réel
-    fetch('zones_bruit.geojson')
+    fetch('Mon-Village-Est-Il-Bruyant--/zones_bruit.geojson')
       .then(response => response.json())
       .then(data => {
         L.geoJSON(data, {
