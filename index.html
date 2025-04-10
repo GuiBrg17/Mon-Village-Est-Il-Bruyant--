@@ -51,6 +51,14 @@
       width: 100%;
       border: 2px solid #ccc;
     }
+
+    .legend {
+      background: white;
+      padding: 10px;
+      font-size: 14px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -74,14 +82,20 @@
 
   <script>
     // Initialiser la carte
-    var map = L.map('map').setView([46.603354, 1.888334], 6); // Coordonnées de la France
+    var map = L.map('map').setView([46.603354, 1.888334], 6); // France
 
-    // Ajouter la carte OpenStreetMap
+    // Ajouter OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
     let marker;
+    let circle;
+
+    function getNoiseLevel(lat, lon) {
+      // Simuler un niveau de bruit aléatoire
+      return Math.floor(Math.random() * 3) + 1; // 1 à 3
+    }
 
     function geocodeAddress() {
       const address = document.getElementById('address').value;
@@ -93,7 +107,6 @@
             const lat = data[0].lat;
             const lon = data[0].lon;
 
-            // Centrer la carte
             map.setView([lat, lon], 13);
 
             // Ajouter ou déplacer le marqueur
@@ -102,6 +115,32 @@
             } else {
               marker = L.marker([lat, lon]).addTo(map);
             }
+
+            // Niveau de bruit simulé
+            const noiseLevel = getNoiseLevel(lat, lon);
+            let color = "green";
+            let radius = 300;
+
+            if (noiseLevel === 2) {
+              color = "yellow";
+              radius = 600;
+            } else if (noiseLevel === 3) {
+              color = "red";
+              radius = 1000;
+            }
+
+            // Supprimer l'ancien cercle
+            if (circle) {
+              map.removeLayer(circle);
+            }
+
+            // Ajouter le cercle de bruit
+            circle = L.circle([lat, lon], {
+              color: color,
+              fillColor: color,
+              fillOpacity: 0.4,
+              radius: radius
+            }).addTo(map);
           } else {
             alert("Adresse introuvable. Essaie une autre.");
           }
@@ -110,6 +149,20 @@
           console.error("Erreur de géocodage :", error);
         });
     }
+
+    // Légende de la carte
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = function (map) {
+      const div = L.DomUtil.create("div", "info legend");
+      div.innerHTML += "<h4>Niveau de bruit</h4>";
+      div.innerHTML += '<i style="background: green; width: 12px; height: 12px; display:inline-block;"></i> Calme<br>';
+      div.innerHTML += '<i style="background: yellow; width: 12px; height: 12px; display:inline-block;"></i> Bruit modéré<br>';
+      div.innerHTML += '<i style="background: red; width: 12px; height: 12px; display:inline-block;"></i> Très bruyant<br>';
+      return div;
+    };
+
+    legend.addTo(map);
   </script>
 </body>
 </html>
