@@ -66,7 +66,6 @@ function showBruitEstimation(lat, lon) {
     .bindPopup(`<strong>Estimation du bruit :</strong><br>${estimation[level]}`)
     .openPopup();
 
-  // Animation
   setTimeout(() => {
     const circles = document.querySelectorAll('path.leaflet-interactive');
     if (circles.length > 0) {
@@ -75,27 +74,35 @@ function showBruitEstimation(lat, lon) {
   }, 50);
 }
 
-// ✅ Permet de cliquer sur la carte
+// Clic direct sur la carte
 map.on("click", function (e) {
   const lat = e.latlng.lat;
   const lon = e.latlng.lng;
   showBruitEstimation(lat, lon);
 });
 
+// Bouton de partage avec confirmation
 function shareLink() {
   const address = document.getElementById('address').value;
-  if (!address) {
-    alert("Veuillez d'abord entrer une adresse.");
-    return;
-  }
-  const url = `${window.location.origin}${window.location.pathname}?adresse=${encodeURIComponent(address)}`;
-  const input = document.getElementById('shareLink');
+  const url = address
+    ? `${window.location.origin}${window.location.pathname}?adresse=${encodeURIComponent(address)}`
+    : window.location.href;
+
+  const input = document.createElement("input");
   input.value = url;
+  document.body.appendChild(input);
   input.select();
   document.execCommand("copy");
-  alert("Lien copié dans le presse-papier !");
+  document.body.removeChild(input);
+
+  const confirmation = document.getElementById("shareConfirmation");
+  confirmation.style.display = "inline";
+  setTimeout(() => {
+    confirmation.style.display = "none";
+  }, 2000);
 }
 
+// Légende
 const legend = L.control({ position: "bottomright" });
 legend.onAdd = function (map) {
   const div = L.DomUtil.create("div", "info legend");
@@ -109,6 +116,7 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
+// Formulaire
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bruitForm");
   const success = document.getElementById("formSuccess");
