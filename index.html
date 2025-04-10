@@ -19,6 +19,10 @@
     <label for="address">Entrez votre adresse :</label>
     <input type="text" id="address" placeholder="Ex: 10 rue de Paris, 75000 Paris" />
     <button onclick="geocodeAddress()">Voir les résultats</button>
+
+    <button onclick="shareLink()">Partager cette adresse</button>
+    <input type="text" id="shareLink" readonly style="margin-top:10px; width:100%; padding:8px;" />
+
     <div id="map"></div>
   </div>
 
