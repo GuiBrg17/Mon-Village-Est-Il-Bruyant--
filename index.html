@@ -28,12 +28,16 @@
 
   <div class="container">
     <h2>Signaler un bruit gênant</h2>
-    <form action="https://formspree.io/f/mgvarpww" method="POST">
+    <form action="https://formspree.io/f/mgvarpww" method="POST" id="bruitForm">
       <label for="message">Décrivez ce que vous entendez :</label><br>
       <textarea name="message" rows="5" style="width:100%; margin-top:8px;" placeholder="Ex: Avion très bas à 5h du matin..."></textarea><br><br>
       <input type="email" name="_replyto" placeholder="Votre e-mail (optionnel)" style="width:100%; padding:8px;" /><br><br>
       <button type="submit">Envoyer</button>
     </form>
+
+    <p id="formSuccess" style="display:none; color: green; font-weight: bold; margin-top: 10px;">
+      ✅ Merci pour votre message, il a bien été envoyé !
+    </p>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
