@@ -75,14 +75,13 @@ function showBruitEstimation(lat, lon) {
   }, 50);
 }
 
-// ✅ Clic direct sur la carte
+// ✅ Permet de cliquer sur la carte
 map.on("click", function (e) {
   const lat = e.latlng.lat;
   const lon = e.latlng.lng;
   showBruitEstimation(lat, lon);
 });
 
-// ✅ Partage du lien
 function shareLink() {
   const address = document.getElementById('address').value;
   if (!address) {
@@ -97,7 +96,6 @@ function shareLink() {
   alert("Lien copié dans le presse-papier !");
 }
 
-// ✅ Légende détaillée
 const legend = L.control({ position: "bottomright" });
 legend.onAdd = function (map) {
   const div = L.DomUtil.create("div", "info legend");
@@ -111,7 +109,6 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
-// ✅ Formulaire de contact
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("bruitForm");
   const success = document.getElementById("formSuccess");
