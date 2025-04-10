@@ -3,38 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mon Village Est-Il Bruyant ?</title>
+  <title>Un avion sur mon village ?</title>
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/747/747376.png" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <header>
-    <h1>Mon Village Est-Il Bruyant ?</h1>
+  <header class="fade-in">
+    <h1>Un avion sur mon village ?</h1>
     <p>Découvrez si votre commune est exposée au bruit des avions</p>
   </header>
 
-  <div class="container">
+  <div class="container fade-in">
     <label for="address">Entrez votre adresse :</label>
     <input type="text" id="address" placeholder="Ex: 10 rue de Paris, 75000 Paris" />
     <button onclick="geocodeAddress()">Voir les résultats</button>
-
     <button onclick="shareLink()">Partager cette adresse</button>
     <input type="text" id="shareLink" readonly style="margin-top:10px; width:100%; padding:8px;" />
-
-    <div id="map"></div>
+    <div id="map" class="fade-in"></div>
   </div>
 
-  <div class="container">
+  <div class="container fade-in">
     <h2>Signaler un bruit gênant</h2>
     <form action="https://formspree.io/f/mgvarpww" method="POST" id="bruitForm">
       <label for="message">Décrivez ce que vous entendez :</label><br>
-      <textarea name="message" rows="5" style="width:100%; margin-top:8px;" placeholder="Ex: Avion très bas à 5h du matin..."></textarea><br><br>
-      <input type="email" name="_replyto" placeholder="Votre e-mail (optionnel)" style="width:100%; padding:8px;" /><br><br>
+      <textarea name="message" rows="5" placeholder="Ex: Avion très bas à 5h du matin..."></textarea><br><br>
+      <input type="email" name="_replyto" placeholder="Votre e-mail (optionnel)" /><br><br>
       <button type="submit">Envoyer</button>
     </form>
-
     <p id="formSuccess" style="display:none; color: green; font-weight: bold; margin-top: 10px;">
       ✅ Merci pour votre message, il a bien été envoyé !
     </p>
